@@ -16,7 +16,7 @@ var moment = require('moment'),
       access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
     }),
     stream,
-    MINUTES = 1,
+    MINUTES = 5,
     // twitter stream filter options
     options = {
       track: ['money', 'avant', 'avantcredit'],
