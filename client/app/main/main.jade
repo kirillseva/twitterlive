@@ -1,0 +1,19 @@
+div(ng-include='"components/navbar/navbar.html"')
+
+{{words}}
+
+div(nvd3-pie-chart=""
+    data="words"
+    id="twitter-donut"
+    width="600"
+    height="600"
+    margin="{left:0,top:0,bottom:0,right:0}"
+    x="xFunction()"
+    y="yFunction()"
+    showLabels="true"
+    showValues="true"
+    labelType="percent"
+    tooltips="true"
+    donut="true"
+    donutRatio=".3"
+    donutLabelsOutside="true")
