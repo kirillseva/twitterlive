@@ -6,7 +6,7 @@
 
 var moment = require('moment'),
     redis = require('redis'),
-    redisClient = redis.createClient(),
+    redisClient,
     _ = require('lodash'),
     Twit = require('twit'),
     twitter = new Twit({
@@ -43,6 +43,16 @@ var moment = require('moment'),
         });
       }
     };
+
+// connecting to redis on dev and on heroku
+if (process.env.REDISTOGO_URL) {
+  var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+  var redisClient = redis.createClient(rtg.port, rtg.hostname);
+
+  redisClient.auth(rtg.auth.split(":")[1]);
+} else {
+  var redisClient = redis.createClient();
+}
 
 redisClient.on("error", function (err) {
   console.log("error event - " + redisClient.host + ":" + redisClient.port + " - " + err);
