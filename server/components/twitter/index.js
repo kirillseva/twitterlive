@@ -4,7 +4,8 @@
 
 'use strict';
 
-var redis = require('redis'),
+var moment = require('moment'),
+    redis = require('redis'),
     redisClient = redis.createClient(),
     _ = require('lodash'),
     Twit = require('twit'),
@@ -15,6 +16,7 @@ var redis = require('redis'),
       access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
     }),
     stream,
+    MINUTES = 1,
     // twitter stream filter options
     options = {
       track: ['money', 'avant', 'avantcredit'],
@@ -30,13 +32,14 @@ var redis = require('redis'),
           //   we are not interested in case sensitive words,
           //   and we also filter out words spammy small words
             var text = pruneString(tweet.text);
-            // save words and tweets to Redis
+            // save the tweet and its words to Redis
             saveTweet(tweet.timestamp_ms, text);
             _.each(text.split(/\s+/), function (word) {
               incrementWordBy(word, 1);
             });
           }
           // check for expired tweets
+          cleanup(MINUTES);
         });
       }
     };
@@ -44,6 +47,20 @@ var redis = require('redis'),
 redisClient.on("error", function (err) {
   console.log("error event - " + redisClient.host + ":" + redisClient.port + " - " + err);
 });
+
+function cleanup (minutes) {
+  var threshold = moment().subtract(minutes, 'minutes').valueOf();
+  // get outdated tweets and decrement all words found in them
+  redisClient.zrangebyscore('tweets', '-inf', threshold, function(error, buffer) {
+    _.each(buffer, function (tweet) {
+      _.each(tweet.split(/\s+/), function (word) {
+        incrementWordBy(word, -1);
+      });
+    });
+  });
+  // now that we have dealt with the words let's remove outdated tweets
+  redisClient.zremrangebyscore('tweets', '-inf', threshold);
+}
 
 // We will store tweets along with the timestamp in Redis
 function saveTweet (timestamp, text) {
