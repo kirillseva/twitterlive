@@ -1,0 +1,11 @@
+table.table-fill.wordtable
+  thead
+    tr
+      th.text-left Word
+      th.text-left Count
+  tbody
+    tr(ng-repeat="item in data")
+      td.text-left
+        {{item.word}}
+      td.text-left
+        {{item.count}}
