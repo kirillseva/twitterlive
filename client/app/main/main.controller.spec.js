@@ -7,13 +7,27 @@ describe('Controller: MainCtrl', function () {
 
   var MainCtrl,
       scope,
-      $httpBackend;
+      $httpBackend,
+      $interval;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function (_$httpBackend_, $controller, $rootScope) {
     $httpBackend = _$httpBackend_;
-    $httpBackend.expectGET('/api/things')
-      .respond(['HTML5 Boilerplate', 'AngularJS', 'Karma', 'Express']);
+    angular.mock.inject(function (_$interval_) {
+      $interval = _$interval_;
+    });
+
+    $httpBackend.expectGET('/api/words?count=10')
+      .respond([
+        {
+          word: 'kirill',
+          count: 10
+        },
+        {
+          word: 'testing',
+          count: 5
+        }
+      ]);
 
     scope = $rootScope.$new();
     MainCtrl = $controller('MainCtrl', {
@@ -22,7 +36,9 @@ describe('Controller: MainCtrl', function () {
   }));
 
   it('should attach a list of things to the scope', function () {
-    $httpBackend.flush();
-    expect(scope.awesomeThings.length).toBe(4);
+    $interval.flush(11);
+    expect(scope.words.length).toBe(0);
+    $interval.flush(1100);
+    expect(scope.words.length).toBe(0);
   });
 });
