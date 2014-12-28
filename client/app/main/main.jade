@@ -1,17 +1,17 @@
-div(ng-include='"components/navbar/navbar.html"')
+.container
+    h1 Twitter's most popular money words
+    div(nvd3-pie-chart=""
+        data="words"
+        id="twitter-donut"
+        x="xFunction()"
+        y="yFunction()"
+        showLabels="true"
+        showValues="true"
+        tooltips="true"
+        donut="true"
+        donutRatio=".3"
+        donutLabelsOutside="true")
 
-div(nvd3-pie-chart=""
-    data="words"
-    id="twitter-donut"
-    width="600"
-    height="600"
-    margin="{left:0,top:0,bottom:0,right:0}"
-    x="xFunction()"
-    y="yFunction()"
-    showLabels="true"
-    showValues="true"
-    labelType="percent"
-    tooltips="true"
-    donut="true"
-    donutRatio=".3"
-    donutLabelsOutside="true")
+    div(wordtable=""
+        data="words"
+        id="word-table")

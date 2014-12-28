@@ -6,7 +6,8 @@ angular.module('twitterliveApp', [
   'ngSanitize',
   'ui.router',
   'ui.bootstrap',
-  'nvd3ChartDirectives'
+  'nvd3ChartDirectives',
+  'legendDirectives'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
     $urlRouterProvider
